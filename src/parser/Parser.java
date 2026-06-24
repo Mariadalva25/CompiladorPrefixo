@@ -23,9 +23,10 @@ public class Parser {
             pos++;
         } else {
             throw new RuntimeException(
-                    "Esperado " + expected +
-                    " encontrado " +
-                    lookahead().getLexeme());
+                    "Erro sintático: esperado "
+                    + expected
+                    + ", encontrado "
+                    + lookahead().getLexeme());
         }
     }
 
@@ -42,15 +43,16 @@ public class Parser {
 
         String left = term();
 
-        while (lookahead().getType() == TokenType.PLUS ||
-               lookahead().getType() == TokenType.MINUS) {
+        while (lookahead().getType() == TokenType.PLUS
+                || lookahead().getType() == TokenType.MINUS) {
 
             Token op = lookahead();
 
-            if (op.getType() == TokenType.PLUS)
+            if (op.getType() == TokenType.PLUS) {
                 match(TokenType.PLUS);
-            else
+            } else {
                 match(TokenType.MINUS);
+            }
 
             String right = term();
 
@@ -68,9 +70,9 @@ public class Parser {
 
         String left = power();
 
-        while (lookahead().getType() == TokenType.MULT ||
-               lookahead().getType() == TokenType.DIV ||
-               lookahead().getType() == TokenType.MOD) {
+        while (lookahead().getType() == TokenType.MULT
+                || lookahead().getType() == TokenType.DIV
+                || lookahead().getType() == TokenType.MOD) {
 
             Token op = lookahead();
 
@@ -105,15 +107,15 @@ public class Parser {
 
         String left = unary();
 
-        while (lookahead().getType() == TokenType.POW) {
+        if (lookahead().getType() == TokenType.POW) {
 
             Token op = lookahead();
 
             match(TokenType.POW);
 
-            String right = unary();
+            String right = power();
 
-            left = op.getLexeme()
+            return op.getLexeme()
                     + " "
                     + left
                     + " "
@@ -174,7 +176,7 @@ public class Parser {
         }
 
         throw new RuntimeException(
-                "Erro sintático próximo de "
+                "Erro sintático próximo ao token: "
                 + token.getLexeme());
     }
 }
